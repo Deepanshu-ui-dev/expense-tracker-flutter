@@ -1,16 +1,41 @@
-# expense_app
+# Expense Tracker Flutter App
 
-A new Flutter project.
+A modern Expense Tracker built in **Flutter** using Material 3 UI, to learn and build real app features step by step.
 
-## Getting Started
+Track your expenses by category, view a weekly chart, and swipe to delete with undo.
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 🧠 What I learned while building this
+- Flutter widgets & layouts  
+- State management with Stateful widgets  
+- Custom theming & Material 3 design  
+- Charts and data visualization  
+- Widget composition & clean code  
+- Git & GitHub workflow (building in public)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🚀 Features
+- Add expense with title, amount, date & category  
+- View all expenses in a list  
+- Swipe to delete with undo  
+- Weekly bar chart for expense overview  
+- Clean modern UI
+
+---
+
+## 📦 Tech Stack
+- Flutter (3.x)  
+- Dart  
+- intl (date formatting)
+
+---
+
+## 🚀 Run Locally
+
+```bash
+git clone https://github.com/Deepanshu-ui-dev/expense-tracker-flutter
+cd expense-tracker-flutter
+flutter pub get
+flutter run
