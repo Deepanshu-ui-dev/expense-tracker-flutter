@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:expense_app/models/expense.dart';
@@ -45,13 +48,21 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
-  void _submitExpenseData() {
-    final enteredAmount = double.tryParse(_amountController.text);
-    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
-
-    if (_titleController.text.trim().isEmpty ||
-        amountIsInvalid ||
-        _selectedDate == null) {
+  void _showInvalidInputDialog() {
+    if (Platform.isIOS || Platform.isMacOS) {
+    showCupertinoDialog(context: context, builder: (ctx) => CupertinoAlertDialog(
+            title: const Text('Invalid input'),
+            content: const Text(
+              'Please make sure a valid title, amount, date, and category were entered.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Okay'),
+              ),
+            ],
+          ));
+        } else {  
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -67,6 +78,18 @@ class _NewExpenseState extends State<NewExpense> {
           ],
         ),
       );
+     }
+    
+  }
+
+  void _submitExpenseData() {
+    final enteredAmount = double.tryParse(_amountController.text);
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
+
+    if (_titleController.text.trim().isEmpty ||
+        amountIsInvalid ||
+        _selectedDate == null) {
+          _showInvalidInputDialog();
       return;
     }
 
@@ -85,27 +108,34 @@ class _NewExpenseState extends State<NewExpense> {
   @override
   Widget build(BuildContext context) {
     final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
+    final width = MediaQuery.of(context).size.width;
+
+    final fieldWidth = width >= 900
+        ? (width - 80) / 3
+        : width >= 600
+            ? (width - 56) / 2
+            : double.infinity;
 
     return SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(20, 20, 20, keyboardSpace + 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// TITLE
-          TextField(
-            controller: _titleController,
-            maxLength: 50,
-            decoration: const InputDecoration(
-              labelText: 'Title',
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          /// AMOUNT + CATEGORY
-          Row(
+          /// INPUT FIELDS
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
             children: [
-              Expanded(
+              SizedBox(
+                width: fieldWidth,
+                child: TextField(
+                  controller: _titleController,
+                  maxLength: 50,
+                  decoration: const InputDecoration(labelText: 'Title'),
+                ),
+              ),
+              SizedBox(
+                width: fieldWidth,
                 child: TextField(
                   controller: _amountController,
                   keyboardType:
@@ -116,13 +146,12 @@ class _NewExpenseState extends State<NewExpense> {
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
-              Expanded(
+              SizedBox(
+                width: fieldWidth,
                 child: DropdownButtonFormField<Category>(
                   value: _selectedCategory,
-                  decoration: const InputDecoration(
-                    labelText: 'Category',
-                  ),
+                  decoration:
+                      const InputDecoration(labelText: 'Category'),
                   items: Category.values.map((category) {
                     return DropdownMenuItem(
                       value: category,
@@ -137,16 +166,14 @@ class _NewExpenseState extends State<NewExpense> {
                   }).toList(),
                   onChanged: (value) {
                     if (value == null) return;
-                    setState(() {
-                      _selectedCategory = value;
-                    });
+                    setState(() => _selectedCategory = value);
                   },
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
 
           /// DATE PICKER
           Row(
@@ -168,19 +195,21 @@ class _NewExpenseState extends State<NewExpense> {
           const SizedBox(height: 24),
 
           /// ACTION BUTTONS
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: _submitExpenseData,
-                child: const Text('Save Expense'),
-              ),
-            ],
+          Align(
+            alignment: Alignment.centerRight,
+            child: Wrap(
+              spacing: 8,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: _submitExpenseData,
+                  child: const Text('Save Expense'),
+                ),
+              ],
+            ),
           ),
         ],
       ),
