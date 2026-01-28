@@ -36,6 +36,6 @@ Track your expenses by category, view a weekly chart, and swipe to delete with u
 
 ```bash
 git clone https://github.com/Deepanshu-ui-dev/expense-tracker-flutter
-cd expense-tracker-flutter
+cd expense_app
 flutter pub get
 flutter run
